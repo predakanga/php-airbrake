@@ -18,6 +18,7 @@ class Configuration extends Record
     protected $_apiKey;
     protected $_timeout = 2;
     protected $_environmentName = 'production';
+    protected $_version;
     protected $_serverData;
     protected $_getData;
     protected $_postData;

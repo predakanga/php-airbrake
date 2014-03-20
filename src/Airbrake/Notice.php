@@ -53,6 +53,7 @@ class Notice extends Record
         $env = $doc->addChild('server-environment');
         $env->addChild('project-root', $configuration->get('projectRoot'));
         $env->addChild('environment-name', $configuration->get('environmentName'));
+        $env->addChild('app-version', $configuration->get('version'));
 
         $error = $doc->addChild('error');
         $error->addChild('class', $this->errorClass);
