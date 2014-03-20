@@ -75,6 +75,12 @@ class Notice extends Record
         $request->addChild('component', $configuration->get('component'));
         $request->addChild('action', $configuration->get('action'));
 
+        // Supposedly current-user is a hash that should be handled like params... in reality, it is not.
+        $user = $doc->addChild('current-user');
+        foreach($configuration->get('userData') as $key => $val) {
+            $user->addChild($key, $val);
+        }
+
         $this->array2Node($request, 'params', array_merge($configuration->getParameters(), array('airbrake_extra' => $this->extraParameters)));
         $this->array2Node($request, 'session', $configuration->get('sessionData'));
         $this->array2Node($request, 'cgi-data', $configuration->get('serverData'));
