@@ -53,13 +53,22 @@ class EventHandler
      *
      * @param string $apiKey
      * @param bool $notifyOnWarning
-     * @param array $options
+     * @param array|Configuration $options
      * @return EventHandler
      */
-    public static function start($apiKey, $notifyOnWarning=false, array $options=array())
+    public static function start($apiKey, $notifyOnWarning=false, $options=NULL)
     {
         if ( !isset(self::$instance)) {
-            $config = new Configuration($apiKey, $options);
+            // Handle default value
+            if(!$options) {
+                $options = array();
+            }
+            // Allow users to pass in their own configuration
+            if(is_array($options)) {
+                $config = new Configuration($apiKey, $options);
+            } else {
+                $config = $options;
+            }
 
             $client = new Client($config);
             self::$instance = new self($client, $notifyOnWarning);
