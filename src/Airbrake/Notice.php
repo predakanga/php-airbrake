@@ -53,7 +53,9 @@ class Notice extends Record
         $env = $doc->addChild('server-environment');
         $env->addChild('project-root', $configuration->get('projectRoot'));
         $env->addChild('environment-name', $configuration->get('environmentName'));
-        $env->addChild('app-version', $configuration->get('version'));
+        if($configuration->get('version')) {
+            $env->addChild('app-version', $configuration->get('version'));
+        }
 
         $error = $doc->addChild('error');
         $error->addChild('class', $this->errorClass);
@@ -77,9 +79,11 @@ class Notice extends Record
         $request->addChild('action', $configuration->get('action'));
 
         // Supposedly current-user is a hash that should be handled like params... in reality, it is not.
-        $user = $doc->addChild('current-user');
-        foreach($configuration->get('userData') as $key => $val) {
-            $user->addChild($key, $val);
+        if($configuration->get('userData')) {
+            $user = $doc->addChild('current-user');
+            foreach($configuration->get('userData') as $key => $val) {
+                $user->addChild($key, $val);
+            }
         }
 
         $this->array2Node($request, 'params', array_merge($configuration->getParameters(), array('airbrake_extra' => $this->extraParameters)));
