@@ -42,10 +42,11 @@ class EventHandler
      *
      * @param Airbrake\Client $client
      */
-    public function __construct(Client $client, $notifyOnWarning)
+    public function __construct(Client $client, $notifyOnWarning, $enableNewrelic=true)
     {
         $this->notifyOnWarning = $notifyOnWarning;
         $this->airbrakeClient = $client;
+        $this->enableNewrelic = $enableNewrelic;
     }
 
     /**
@@ -112,6 +113,10 @@ class EventHandler
         if (ini_get('error_reporting') == 0) {
             return true;
         }
+        
+        if($this->enableNewrelic && extension_loaded('newrelic')) {
+            newrelic_notice_error($message);
+        }
 
         if (isset($this->fatalErrors[$type])) {
             throw new Exception($message);
@@ -140,6 +145,10 @@ class EventHandler
     public function onException(Exception $exception)
     {
         $this->airbrakeClient->notifyOnException($exception);
+        
+        if($this->enableNewrelic && extension_loaded('newrelic')) {
+            newrelic_notice_error($exception->getMessage(), $exception);
+        }
 
         return true;
     }
